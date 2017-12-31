@@ -12,12 +12,14 @@
  * HashMap: hash the key values to the location where item is stored
  */
 #include <iostream>
+#include <map>
 using namespace std;
 
 struct Node
 {
     int key, value;
-    Node* next, prev;
+    Node* next;
+    Node* prev;
     Node(int k, int v): key(k), value(v), prev(NULL), next(NULL) {}
 };
 class DoublyLinkedList
@@ -29,9 +31,10 @@ public:
     Node* get_rear_page();
     Node* add_page_to_head(int key, int value);
 private:
-    Node* front, rear;
+    Node* front;
+    Node* rear;
 };
-Node* get_rear_page()
+Node* DoublyLinkedList::get_rear_page()
 {
     return rear;
 }
@@ -87,6 +90,7 @@ class LRUCache
 {
 public:
     LRUCache(int capacity);
+    ~LRUCache();
     int get(int key);
     void put(int key, int value);
 private:
@@ -95,7 +99,7 @@ private:
     DoublyLinkedList* pageList;
     map<int, Node*> pageMap;
 };
-LRUCache:::LRUCache(int capacity)
+LRUCache::LRUCache(int capacity)
 {
     this->capacity = capacity;
     size = 0;
@@ -113,8 +117,8 @@ void LRUCache::put(int k, int v)
 {
     if (pageMap.find(k) != pageMap.end()) {
 	// key already present
-	pageMap[key]->value = v;
-	pageList->move_page_to_head(pageMap[key]);
+	pageMap[k]->value = v;
+	pageList->move_page_to_head(pageMap[k]);
 	return;
     }
     // New page
@@ -133,4 +137,26 @@ void LRUCache::put(int k, int v)
     pageMap[k] = pageList->add_page_to_head(k, v);
     size++;
 }
-    
+LRUCache::~LRUCache()
+{
+    // delete every Node in pageMap
+    for (auto p = pageMap.begin(); p != pageMap.end(); p++) {
+	delete p->second;
+    }
+    delete pageList;
+}
+int main()
+{
+    LRUCache cache(2); // a cache of capacity 2
+    cache.put(2,2);
+    cout << cache.get(2) << endl; // 2
+    cout << cache.get(1) << endl; // -1
+    cache.put(1, 1);
+    cache.put(1, 5);
+    cout << cache.get(1) << endl; // 5
+    cout << cache.get(2) << endl; // 2
+    cache.put(8,8);
+    cout << cache.get(1) << endl; // -1
+    cout << cache.get(8) << endl; // 8
+    return 0;
+}
