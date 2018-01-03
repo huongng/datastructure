@@ -93,6 +93,7 @@ public:
     ~LRUCache();
     int get(int key);
     void put(int key, int value);
+    vector<Node*> topPagesVisited(int time);
 private:
     int capacity;
     int size;
@@ -105,6 +106,16 @@ LRUCache::LRUCache(int capacity)
     size = 0;
     pageList = new DoublyLinkedList();
     pageMap = map<int, Node*>();
+}
+vector<Node*> LRUCache::topPagesVisited(int times)
+{
+    Node* temp = front;
+    vector<Node*> pages;
+    if (times > size) times = size;
+    for (int i = 0; i < times; i++) {
+	pages.push_back(temp);
+	temp = temp->prev;
+    }
 }
 int LRUCache::get(int key)
 {
@@ -145,18 +156,33 @@ LRUCache::~LRUCache()
     }
     delete pageList;
 }
+class _LRUCache
+{
+public:
+    _LRUCache(int capacity) : this->capacity = capacity;
+    void put(int k, int v);
+    int get(int key);
+private:
+    int capacity;
+    typedef list<Node*> pageList;
+    unordered_map<int, Node*> pageMap;
+}
 int main()
 {
-    LRUCache cache(2); // a cache of capacity 2
-    cache.put(2,2);
-    cout << cache.get(2) << endl; // 2
-    cout << cache.get(1) << endl; // -1
-    cache.put(1, 1);
-    cache.put(1, 5);
+    LRUCache cache(10); // a cache of capacity 10
+    for (int i = 0; i < 8; i++) {
+	cache.put(i, 1);
+    }
+    
+    cout << cache.get(2) << endl; // 1
+    cout << cache.get(1) << endl; // 1
+    cache.put(9, 1);
+    cache.put(10, 5);
+    cache.put(11, 1);
     cout << cache.get(1) << endl; // 5
     cout << cache.get(2) << endl; // 2
     cache.put(8,8);
     cout << cache.get(1) << endl; // -1
-    cout << cache.get(8) << endl; // 8
+
     return 0;
 }
