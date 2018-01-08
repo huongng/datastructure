@@ -1,6 +1,7 @@
 #ifndef BNODE_TREE_H
 #define BNODE_TREE_H
 
+#include <stack>
 #include "BinaryTreeInterface.h"
 #include "Node.h"
 template<class T>
@@ -9,6 +10,9 @@ class BinaryNodeTree : BinaryTreeInterface<T>
 private:
     Node<T>* rootPtr;
 protected:
+//------------------------------------------------------------
+// Protected Helper Methods
+//------------------------------------------------------------
     int getHeightHelper(const Node<T>* subTree) const;
     int getNumberOfNodes(const Node<T>* subTree) const;
     // Recursively delete all nodes from the tree
@@ -25,9 +29,13 @@ protected:
     // the copy.
     Node<T>*copyTree(const Node<T>* treePtr) const;
     // Recursive traversal helper methods:
-    void preorder(void visit(ItemType&), BinaryNode<ItemType>* treePtr) const;
-    void inorder(void visit(ItemType&), BinaryNode<ItemType>* treePtr) const;
-    void postorder(void visit(ItemType&), BinaryNode<ItemType>* treePtr) const;
+    void preorder(void visit(T&), Node<T>* treePtr) const;
+    void inorder(void visit(T&), Node<T>* treePtr) const;
+    void postorder(void visit(T&), Node<T>* treePtr) const;
+
+    void preorder_it(void visit(T&), Node<T>* treePtr) const;
+    void inorder_it(void visit(T&), Node<T>* treePtr) const;
+    void postorder_it(void visit(T&), Node<T>* treePtr) const;
 
 public:
 //------------------------------------------------------------
@@ -36,7 +44,7 @@ public:
     BinaryNodeTree();
     BinaryNodeTree(const T& rootItem);
     BinaryNodeTree(const T& rootItem, const Node<T>* lPtr, const Node<T>* rPtr);
-    BinaryNodeTree(const BinaryNodeTree<T>* tree);
+    BinaryNodeTree(const BinaryNodeTree<T>& tree);
     virtual ~BinaryNodeTree();
 //------------------------------------------------------------
 // Public Interface methods
